@@ -1,25 +1,50 @@
 from datetime import date
+from typing import List
 
 from fastapi import FastAPI
-from fastapi import status, HTTPException, Response
+from fastapi import Request
+from fastapi import status
+from fastapi import HTTPException
+from fastapi import Response
 from fastapi.encoders import jsonable_encoder
+
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
 
 from sqlalchemy.orm import Session
 from sqlalchemy import select
-
 
 from models import LeituraModel
 from schemas import LeituraSchema
 from database import engine
 
+
+
+
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+
+@app.get('/home', response_class=HTMLResponse)
+async def get_home(request: Request):
+    with Session(engine) as session:
+        query = select(LeituraModel)
+        lista = session.execute(query).scalars().all()
+        return templates.TemplateResponse("base_list.html", {"request": request, "leituras": lista})
+
+
+
+
 
 
 @app.get('/lista', status_code=status.HTTP_200_OK)
 async def get_all():
     with Session(engine) as session:
         query = select(LeituraModel)
-        result = session.execute(query).all()
+        result = session.execute(query).scalars().all()
         return result
 
 

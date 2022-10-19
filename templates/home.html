@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
+    <title>Igara Life - Leituras</title>
+</head>
+<body>
+    <header>
+        <h1>Generic Header</h1>
+    </header>
+
+    <div class="content-box">
+        <nav class="content-item">
+            <ul>
+                <li>
+                    <a href="/home">Consultas</a>
+                </li>
+                <li>
+                    <a href="#">Leituras</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div id="content">{% block content %}{% endblock %}</div>
+    </div>
+</body>
+</html>
