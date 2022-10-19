@@ -20,4 +20,3 @@ class LeituraModel(settings.DBBaseModel):
     @classmethod
     def create_from_schema(self, leitura_body: LeituraSchema):
         return self(**dict(leitura_body))
-        
