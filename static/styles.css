@@ -85,3 +85,15 @@ tr:hover {
     background-color: var(--cor-principal);
     color:rgb(222, 228, 235)
 }
+
+form {
+    padding: 10px;
+}
+
+label {
+    text-align: right;
+}
+
+input {
+    width: 100%;
+}

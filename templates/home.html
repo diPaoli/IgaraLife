@@ -15,7 +15,8 @@
         <nav class="content-item">
             <ul>
                 <li>
-                    <a href="/home">Consultas</a>
+                    <p><a href="/home">Consultas</a></p>
+                    <p>{% include 'filtros.html' %}</p>
                 </li>
                 <li>
                     <a href="#">Leituras</a>
@@ -23,7 +24,7 @@
             </ul>
         </nav>
 
-        <div id="content">{% block content %}{% endblock %}</div>
+        <div id="content">{% include 'base_list.html' %}</div>
     </div>
 </body>
 </html>

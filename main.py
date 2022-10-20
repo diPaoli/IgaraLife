@@ -1,5 +1,4 @@
 from datetime import date
-from typing import List
 
 from fastapi import FastAPI
 from fastapi import Request
@@ -28,12 +27,21 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
+# @app.get('/home', response_class=HTMLResponse)
+# async def home_page(request: Request):
+#     with Session(engine) as session:
+#         query = select(LeituraModel)
+#         lista = session.execute(query).scalars().all()
+#         return templates.TemplateResponse("home.html", {"request": request, "leituras": lista})
+
+
 @app.get('/home', response_class=HTMLResponse)
-async def get_home(request: Request):
-    with Session(engine) as session:
-        query = select(LeituraModel)
-        lista = session.execute(query).scalars().all()
-        return templates.TemplateResponse("base_list.html", {"request": request, "leituras": lista})
+def filter_by_ap(request: Request, tx_ap):
+    if tx_ap:
+        lista = get_leituras_by_ap(tx_ap)
+    else:
+        lista = get_all()
+    return templates.TemplateResponse("home.html", {"request": request, "leituras": lista})
 
 
 
@@ -41,7 +49,7 @@ async def get_home(request: Request):
 
 
 @app.get('/lista', status_code=status.HTTP_200_OK)
-async def get_all():
+def get_all():
     with Session(engine) as session:
         query = select(LeituraModel)
         result = session.execute(query).scalars().all()
@@ -49,7 +57,7 @@ async def get_all():
 
 
 @app.get('/lista/{id_leitura}', status_code=status.HTTP_200_OK)
-async def get_leitura_by_id(id_leitura: int):
+def get_leitura_by_id(id_leitura: int):
     with Session(engine) as session:
         query = select(LeituraModel).filter_by(id=id_leitura)
         result = session.execute(query).first()
@@ -57,15 +65,15 @@ async def get_leitura_by_id(id_leitura: int):
 
 
 @app.get('/lista/ap/{ap_num}', status_code=status.HTTP_200_OK)
-async def get_leituras_by_ap(ap_num: int):
+def get_leituras_by_ap(ap_num: int):
     with Session(engine) as session:
         query = select(LeituraModel).filter_by(apartamento=ap_num)
-        result = session.execute(query).all()
+        result = session.execute(query).scalars().all()
         return result
 
 
 @app.get('/lista/data/{data}', status_code=status.HTTP_200_OK)
-async def get_leituras_by_date(data: date):
+def get_leituras_by_date(data: date):
     with Session(engine) as session:
         query = select(LeituraModel).filter_by(data=data)
         result = session.execute(query).all()
@@ -73,7 +81,7 @@ async def get_leituras_by_date(data: date):
 
 
 @app.get('/lista/data/{data_ini}/{data_fin}', status_code=status.HTTP_200_OK)
-async def get_leituras_within_period(data_ini, data_fin: date):
+def get_leituras_within_period(data_ini, data_fin: date):
     with Session(engine) as session:
         query = select(LeituraModel).filter(LeituraModel.data >= data_ini, LeituraModel.data <= data_fin)
         result = session.execute(query).all()
@@ -81,7 +89,7 @@ async def get_leituras_within_period(data_ini, data_fin: date):
 
 
 @app.post('/leitura', status_code=status.HTTP_201_CREATED)
-async def post_leitura(leitura_body: LeituraSchema):
+def post_leitura(leitura_body: LeituraSchema):
     with Session(engine) as session:
         try:
             leitura = LeituraModel.create_from_schema(leitura_body)
@@ -94,7 +102,7 @@ async def post_leitura(leitura_body: LeituraSchema):
 
 
 @app.delete('/leitura/{leitura_id}', status_code=status.HTTP_200_OK)
-async def delete_leitura(leitura_id: int):
+def delete_leitura(leitura_id: int):
     with Session(engine) as session:
         try:
             leitura = session.get(LeituraModel, leitura_id)
