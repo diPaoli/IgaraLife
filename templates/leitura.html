@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
-    <script defer src="https://pyscript.net/unstable/pyscript.js"></script>
+    <script src="{{ url_for('static', path='/html5-qrcode.min.js') }}"></script>
     <title>Igara Life</title>
 </head>
+
 <body>
     <header>
         <h1>Nova Leitura</h1>
@@ -22,10 +24,33 @@
                     <a href="/leitura">Leituras</a>
                 </li>
             </ul>
-        </nav>   
+        </nav>
+        <div id="qrReader" name="qrReader" style="width: 600px"></div>
     </div>
 
+    
 
+    <script>
+        function onScanSuccess(decodedText, decodedResult) {
+            // handle the scanned code as you like, for example:
+            console.log(`Code matched = ${decodedText}`, decodedResult);
 
+            alert(decodedText)
+
+        }
+
+        function onScanFailure(error) {
+            // handle scan failure, usually better to ignore and keep scanning.
+            // for example:
+            console.warn(`Code scan error = ${error}`);
+        }
+
+        let html5QrcodeScanner = new Html5QrcodeScanner(
+            "qrReader",
+            { fps: 10, qrbox: { width: 350, height: 350 } },
+        /* verbose= */ false);
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);</script>
+    
 </body>
+
 </html>

@@ -44,9 +44,11 @@ async def get_leituras_by_ap(request: Request, ap_num: int):
 
 
 @app.get('/leitura')
-async def post_qr_code(request: Request):
-    import qrcode_reader
-    qrcode_reader.abrir_cam()
+async def qr_teste(request: Request):
+    return templates.TemplateResponse("leitura.html", {"request": request})
+
+
+
 
 # @app.post('/leitura', status_code=status.HTTP_201_CREATED)
 # def post_leitura(leitura_body: LeituraSchema):
@@ -117,4 +119,4 @@ def delete_leitura(leitura_id: int):
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    uvicorn.run('main:app', host="0.0.0.0", port=8000, reload=True)
