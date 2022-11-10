@@ -27,33 +27,47 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 
-# @app.get('/home', response_class=HTMLResponse)
-# async def home_page(request: Request):
-#     with Session(engine) as session:
-#         query = select(LeituraModel)
-#         lista = session.execute(query).scalars().all()
-#         return templates.TemplateResponse("home.html", {"request": request, "leituras": lista})
-
-
-@app.get('/home', response_class=HTMLResponse)
-def filter_by_ap(request: Request, tx_ap):
-    if tx_ap:
-        lista = get_leituras_by_ap(tx_ap)
-    else:
-        lista = get_all()
-    return templates.TemplateResponse("home.html", {"request": request, "leituras": lista})
-
-
-
-
-
-
-@app.get('/lista', status_code=status.HTTP_200_OK)
-def get_all():
+@app.get('/', status_code=status.HTTP_200_OK)
+async def get_all(request: Request):
     with Session(engine) as session:
         query = select(LeituraModel)
-        result = session.execute(query).scalars().all()
-        return result
+        lista = session.execute(query).scalars().all()
+        return templates.TemplateResponse("consulta.html", {"request": request, "leituras": lista})
+
+
+@app.get('/lista/ap/{ap_num}', status_code=status.HTTP_200_OK)
+async def get_leituras_by_ap(request: Request, ap_num: int):
+    with Session(engine) as session:
+        query = select(LeituraModel).filter_by(apartamento=ap_num)
+        lista = session.execute(query).scalars().all()
+        return templates.TemplateResponse("consulta.html", {"request": request, "leituras": lista})
+
+
+@app.get('/leitura')
+async def post_qr_code(request: Request):
+    import qrcode_reader
+    qrcode_reader.abrir_cam()
+
+# @app.post('/leitura', status_code=status.HTTP_201_CREATED)
+# def post_leitura(leitura_body: LeituraSchema):
+#     with Session(engine) as session:
+#         try:
+#             leitura = LeituraModel.create_from_schema(leitura_body)
+#             session.add(leitura)
+#             session.commit()
+#             session.refresh(leitura)
+#             return jsonable_encoder(leitura)
+#         except Exception as exception:
+#             raise HTTPException(status_code=500, detail=str(exception)) from exception
+
+
+
+
+
+
+
+
+
 
 
 @app.get('/lista/{id_leitura}', status_code=status.HTTP_200_OK)
@@ -64,12 +78,7 @@ def get_leitura_by_id(id_leitura: int):
         return result
 
 
-@app.get('/lista/ap/{ap_num}', status_code=status.HTTP_200_OK)
-def get_leituras_by_ap(ap_num: int):
-    with Session(engine) as session:
-        query = select(LeituraModel).filter_by(apartamento=ap_num)
-        result = session.execute(query).scalars().all()
-        return result
+
 
 
 @app.get('/lista/data/{data}', status_code=status.HTTP_200_OK)
@@ -88,17 +97,7 @@ def get_leituras_within_period(data_ini, data_fin: date):
         return result
 
 
-@app.post('/leitura', status_code=status.HTTP_201_CREATED)
-def post_leitura(leitura_body: LeituraSchema):
-    with Session(engine) as session:
-        try:
-            leitura = LeituraModel.create_from_schema(leitura_body)
-            session.add(leitura)
-            session.commit()
-            session.refresh(leitura)
-            return jsonable_encoder(leitura)
-        except Exception as exception:
-            raise HTTPException(status_code=500, detail=str(exception)) from exception
+
 
 
 @app.delete('/leitura/{leitura_id}', status_code=status.HTTP_200_OK)
@@ -118,4 +117,4 @@ def delete_leitura(leitura_id: int):
 
 if __name__ == '__main__':
     import uvicorn
-    uvicorn.run("main:app", host="localhost", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000)

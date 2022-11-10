@@ -1,12 +1,11 @@
-<form>
-    <label for="tx_ap">Apartamento:</label>
-    <input type="text" name="tx_ap" id="tx_ap">
-    <br>
-
-    <!-- <label for="i_data">Data:</label>
-    <input type="date" name="i_data" id="i_data"> -->
-    <br><br>
-
-    <button>Aplicar Filtros</button>
-
-</form>
+<script src="{{ url_for('static', path='/filtros.js') }}"></script>
+<div class="filtros">
+    <p>
+        <label for="tx_ap">Apartamento:</label>
+        <input type="number" name="tx_ap" id="tx_ap">
+    </p>
+    <p>
+        <button onclick="filtrar();">Aplicar</button>
+        <button onclick="limpar();">Limpar</button>
+    </p>
+</div>
