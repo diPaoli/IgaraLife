@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
     <script src="{{ url_for('static', path='/html5-qrcode.min.js') }}"></script>
+    <script src="{{ url_for('static', path='/filtros.js') }}"></script>
     <title>Igara Life</title>
 </head>
 
@@ -26,6 +27,15 @@
             </ul>
         </nav>
         <div id="qrReader" name="qrReader" style="width: 600px"></div>
+        <form method="post" action="/salvar">
+            <label for="ap">Apartamento:</label>
+            <input type="number" name="ap" id="ap">
+            <label for="igas">GÁS:</label>
+            <input type="number" name="igas" id="igas">
+            <label for="iagua">ÁGUA:</label>
+            <input type="number" name="iagua" id="iagua">
+            <button>Salvar</button>
+        </form>
     </div>
 
     
@@ -34,9 +44,7 @@
         function onScanSuccess(decodedText, decodedResult) {
             // handle the scanned code as you like, for example:
             console.log(`Code matched = ${decodedText}`, decodedResult);
-
-            alert(decodedText)
-
+            document.getElementById('ap').value = decodedText;
         }
 
         function onScanFailure(error) {
@@ -49,7 +57,10 @@
             "qrReader",
             { fps: 10, qrbox: { width: 350, height: 350 } },
         /* verbose= */ false);
-        html5QrcodeScanner.render(onScanSuccess, onScanFailure);</script>
+        html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+
+
+    </script>
     
 </body>
 

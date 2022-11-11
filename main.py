@@ -49,18 +49,28 @@ async def qr_teste(request: Request):
 
 
 
+@app.post('/salvar')
+async def post_leitura(request: Request):
+    form = jsonable_encoder(await request.form())
+    leitura_body = LeituraSchema(
+        apartamento=form['ap'],
+        gas = form['igas'],
+        agua = form['iagua'],
+        data = date.today()
+        )
+    grava_leitura(leitura_body)
 
-# @app.post('/leitura', status_code=status.HTTP_201_CREATED)
-# def post_leitura(leitura_body: LeituraSchema):
-#     with Session(engine) as session:
-#         try:
-#             leitura = LeituraModel.create_from_schema(leitura_body)
-#             session.add(leitura)
-#             session.commit()
-#             session.refresh(leitura)
-#             return jsonable_encoder(leitura)
-#         except Exception as exception:
-#             raise HTTPException(status_code=500, detail=str(exception)) from exception
+
+def grava_leitura(leitura_body: LeituraSchema):
+    with Session(engine) as session:
+        try:
+            leitura = LeituraModel.create_from_schema(leitura_body)
+            session.add(leitura)
+            session.commit()
+            session.refresh(leitura)
+            return jsonable_encoder(leitura)
+        except Exception as exception:
+            raise HTTPException(status_code=500, detail=str(exception)) from exception
 
 
 
