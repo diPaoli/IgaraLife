@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
     <script src="{{ url_for('static', path='/html5-qrcode.min.js') }}"></script>
-    <script src="{{ url_for('static', path='/filtros.js') }}"></script>
     <title>Igara Life</title>
 </head>
 
@@ -26,8 +25,13 @@
                 </li>
             </ul>
         </nav>
+
+
         <div id="qrReader" name="qrReader" style="width: 600px"></div>
+
+
         <form method="post" action="/leitura">
+            <p>{{ msg }}</p>
             <label for="ap">Apartamento:</label>
             <input type="number" name="ap" id="ap">
             <label for="igas">GÁS:</label>
@@ -58,10 +62,8 @@
             { fps: 10, qrbox: { width: 350, height: 350 } },
         /* verbose= */ false);
         html5QrcodeScanner.render(onScanSuccess, onScanFailure);
-
-
     </script>
     
-</body>
 
+</body>
 </html>

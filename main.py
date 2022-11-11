@@ -67,7 +67,7 @@ def get_leituras_within_period(data_ini, data_fin: date):
 
 @app.get('/leitura')
 async def qrcode_scan(request: Request):
-    return templates.TemplateResponse("leitura.html", {"request": request})
+    return templates.TemplateResponse("leitura.html", {"request": request, "msg": "Teste"})
 
 
 @app.post('/leitura')
@@ -79,7 +79,8 @@ async def post_leitura(request: Request):
         agua = form['iagua'],
         data = date.today()
         )
-    grava_leitura(leitura_body)
+    msg = grava_leitura(leitura_body)
+    return templates.TemplateResponse("leitura.html", {"request": request, "msg": msg})
 
 
 def grava_leitura(leitura_body: LeituraSchema):
@@ -89,7 +90,7 @@ def grava_leitura(leitura_body: LeituraSchema):
             session.add(leitura)
             session.commit()
             session.refresh(leitura)
-            return jsonable_encoder(leitura)
+            return "OK"
         except Exception as exception:
             raise HTTPException(status_code=500, detail=str(exception)) from exception
 
