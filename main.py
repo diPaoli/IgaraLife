@@ -70,13 +70,13 @@ async def qrcode_scan(request: Request):
     return templates.TemplateResponse("leitura.html", {"request": request, "msg": "Teste"})
 
 
-@app.post('/leitura')
+@app.post('/post_leitura')
 async def post_leitura(request: Request):
     form = jsonable_encoder(await request.form())
     leitura_body = LeituraSchema(
-        apartamento=form['ap'],
-        gas = form['igas'],
-        agua = form['iagua'],
+        apartamento = form['i_ap'],
+        gas = form['i_gas'],
+        agua = form['i_agua'],
         data = date.today()
         )
     msg = grava_leitura(leitura_body)

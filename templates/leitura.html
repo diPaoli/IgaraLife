@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', path='/styles.css') }}">
     <script src="{{ url_for('static', path='/html5-qrcode.min.js') }}"></script>
+    <script src="{{ url_for('static', path='/validations.js') }}"></script>
     <title>Igara Life</title>
 </head>
 
@@ -30,14 +31,39 @@
         <div id="qrReader" name="qrReader" style="width: 600px"></div>
 
 
-        <form method="post" action="/leitura">
+        <form method="post" action="/post_leitura">
             <p>{{ msg }}</p>
-            <label for="ap">Apartamento:</label>
-            <input type="number" name="ap" id="ap">
-            <label for="igas">GÁS:</label>
-            <input type="number" name="igas" id="igas">
-            <label for="iagua">ÁGUA:</label>
-            <input type="number" name="iagua" id="iagua">
+            <label for="i_ap">Apartamento:</label>
+            <input type="number" 
+                name="i_ap" 
+                id="i_ap" 
+                required 
+                max="9999"
+                inputmode="numeric" 
+                placeholder="Registre o QRCode do Apartamento."
+                pattern="[0-9]{4}"/>
+            <label for="i_gas">GÁS:</label>
+            <input type="number" 
+                name="i_gas" 
+                id="i_gas" 
+                min="0" 
+                max="99999.999"
+                step="0.001" 
+                value="0" 
+                required 
+                inputmode="numeric"
+                pattern="[0-9]{8}"/>
+            <label for="i_agua">ÁGUA:</label>
+            <input type="number" 
+                name="i_agua" 
+                id="i_agua" 
+                min="0" 
+                max="9999.999"
+                step="0.001" 
+                value="0" 
+                required 
+                inputmode="numeric"
+                pattern="[0-9]{7}"/>
             <button>Salvar</button>
         </form>
     </div>
@@ -48,7 +74,7 @@
         function onScanSuccess(decodedText, decodedResult) {
             // handle the scanned code as you like, for example:
             console.log(`Code matched = ${decodedText}`, decodedResult);
-            document.getElementById('ap').value = decodedText;
+            document.getElementById('i_ap').value = decodedText;
         }
 
         function onScanFailure(error) {
